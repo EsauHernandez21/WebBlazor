@@ -1,0 +1,255 @@
+Para instalar Oracle Database 23c Free en Windows, tienes principalmente dos opciones con los archivos listados:
+
+PL/SQL (Procedural Language/Structured Query Language) es el lenguaje de programación procedimental de Oracle que extiende las capacidades de SQL
+
+https://www.oracle.com/database/free/get-started/
+
+
+Para instalar Oracle Database 23c Free en Windows, aquí tienes las dos opciones que has mencionado y su propósito:
+
+WINDOWS.X64_235000_free.zip (1.33 GB):
+
+Este archivo es la versión completa de Oracle Database 23c Free. Contiene la base de datos y todas las herramientas necesarias para 
+su uso en un entorno de desarrollo o pruebas local.
+Ideal si necesitas una instalación completa para crear, gestionar, y desarrollar bases de datos con todas las funcionalidades de Oracle Database, 
+incluyendo PL/SQL.
+
+WINDOWS.X64_235000_client_home.zip (802 MB):
+
+Este archivo contiene únicamente el cliente de Oracle Database. Incluye herramientas necesarias para conectarse a una base de datos Oracle instalada en otro servidor,
+pero no incluye la base de datos completa.
+Es útil para conectarse remotamente a una base de datos Oracle desde una aplicación o para administrar bases de datos sin realizar una instalación completa del servidor.
+
+
+¿Cuál elegir?
+Si necesitas instalar y usar Oracle Database 23c Free en tu máquina local, descarga WINDOWS.X64_235000_free.zip.
+Si solo necesitas conectarte a una base de datos Oracle existente en otro servidor (por ejemplo, para consultas o administración), descarga WINDOWS.X64_235000_client_home.zip.
+
+contraseña
+sayoslp
+
+
+
+para el login usar SQL PLUS
+
+usuario:  sys as sysdba
+password: sayoslp
+
+SQL Developer 2022SS
+
+instalar Windows 64-bit with JDK 17 included para SQL Developer2022
+
+
+***************crear una nuena conexion 
+usuario sys 
+
+rol sysdb
+
+***************Configurar carpeta
+
+Identificar el nombre de usuario 
+
+Abrir Administrador de tareas buscar oracle.exe identificar el nombre de usuario en este caso es OracleServiceFREE
+
+
+configurar carpeta en propiedades seguridad buscar el el nombre de usuairo NT SERVICE\OracleServiceFREE
+
+
+
+***************Paso 1)para crear una base de datos instalar
+
+Opción 1: Instalar Oracle Database Express Edition (XE)
+Oracle Database Express Edition es una versión gratuita y ligera de Oracle
+
+
+Pasos para Crear la Base de Datos Pluggable bdProd
+Iniciar la Instancia de Oracle: Primero, necesitas iniciar la instancia de Oracle. Como ya habías comenzado con la instancia, verificaste su estado y luego iniciaste con:
+
+verificar estado instancia
+SELECT status FROM v$instance;
+
+
+verficar estado bd
+SELECT name, open_mode FROM v$database;
+
+1)
+sql
+STARTUP NOMOUNT;
+Montar la Base de Datos: Luego, montaste la base de datos (o pluggable database) usando:
+
+2)
+sql
+ALTER DATABASE MOUNT;
+Verificar el Estado de la Base de Datos: Para asegurarte de que la base de datos estaba montada correctamente, verificaste su estado:
+
+3)
+sql
+SELECT name, open_mode FROM v$database;
+Crear la Base de Datos Pluggable: Finalmente, creaste la base de datos pluggable bdProd con el siguiente comando, asegurándote de especificar la conversión de archivos para la ubicación correcta:
+
+4)
+sql
+CREATE PLUGGABLE DATABASE bdProd
+ADMIN USER admin IDENTIFIED BY sayoslp
+FILE_NAME_CONVERT = ('C:\ORACLE\ORADATA\FREE', 'C:\OracleData\bdProduct
+
+
+********************************************************************Verificar conexion BD
+
+
+1. Conectar a la Instancia de Oracle
+Primero, asegúrate de que estás conectado a la instancia de Oracle que contiene la base de datos pluggable (PDB) que acabas de crear.
+
+bash
+sqlplus sys as sysdba
+
+2. Verificar las PDBs Disponibles
+Una vez que estés conectado como un usuario con privilegios adecuados, ejecuta el siguiente comando para verificar las bases de datos pluggable disponibles:
+
+sql
+SHOW PDBS;
+Esto mostrará una lista de todas las PDBs junto con su estado.
+
+
+3. Abrir la PDB
+Ejecuta el siguiente comando para abrir la PDB:
+
+sql
+ALTER PLUGGABLE DATABASE bdProd OPEN;
+
+
+4. Verificar el Estado de la PDB
+Después de abrir la PDB, verifica su estado nuevamente:
+
+sql
+SELECT name, open_mode FROM v$database;
+
+
+***********Verificación Final
+5.Verificar el estado de la PDB bdProd:
+
+Asegúrate de que el nombre y el modo de apertura de bdProd se muestren correctamente:
+
+sql
+Copiar código
+ALTER SESSION SET CONTAINER=bdProd;
+SELECT name, open_mode FROM v$database;
+
+6.Conectar como el usuario administrador:
+
+Conéctate al contenedor raíz como usuario SYS
+CONNECT sys/sayoslp AS SYSDBA;
+
+Cambia el contenedor a bdProd:
+ALTER SESSION SET CONTAINER = bdProd;
+
+
+
+SQL> SHOW CON_NAME;
+
+CON_NAME
+------------------------------
+BDPROD
+SQL> SHOW USER;
+USER es "ADMIN"
+
+
+
+CONNECT sys/sayoslp AS SYSDBA;
+
+ALTER SESSION SET CONTAINER = BDPROD;
+
+GRANT CREATE TABLE, ALTER ANY TABLE, INSERT ANY TABLE, DELETE ANY TABLE, UPDATE ANY TABLE, SELECT ANY TABLE TO admin;
+
+GRANT DBA TO ADMIN;
+
+
+CONNECT admin/sayoslp@bdProd;
+CREATE TABLE Producto (
+    ProductoId NUMBER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    Nombre VARCHAR2(100) NOT NULL,
+    Descripcion VARCHAR2(255),
+    Precio NUMBER(10, 2) NOT NULL,
+    Stock NUMBER NOT NULL
+);
+
+
+INSERT INTO Producto (Nombre, Descripcion, Precio, Stock)
+VALUES ('Producto Ejemplo', 'Descripción del producto de ejemplo', 99.99, 150);
+
+COMMIT;
+
+
+COLUMN ProductoId FORMAT 999
+COLUMN Nombre FORMAT A30
+COLUMN Precio FORMAT 999.99
+COLUMN Stock FORMAT 999
+
+SELECT ProductoId, Nombre, Precio, Stock FROM Producto;
+
+
+
+********************************************************************Conectar a la Base de Datos
+CONNECT sys/sayoslp AS SYSDBA;  --como administrador
+ALTER SESSION SET CONTAINER = bdProd;
+GRANT CREATE SESSION TO ADMIN;
+GRANT INSERT ANY TABLE TO ADMIN;
+GRANT UPDATE ANY TABLE TO ADMIN;
+GRANT DELETE ANY TABLE TO ADMIN;
+
+sys as sysdba
+
+
+Conectar a la Base de Datos
+CONNECT admin/sayoslp@bdProd;
+
+SHOW USER;
+SHOW CON_NAME;
+
+ALTER SESSION SET CONTAINER=bdProd;
+
+Verificar la Conexión
+
+COLUMN ProductoId FORMAT 999
+COLUMN Nombre FORMAT A30
+COLUMN Precio FORMAT 999.99
+COLUMN Stock FORMAT 999
+
+SELECT * FROM DBA_ROLE_PRIVS WHERE GRANTEE = 'ADMIN';
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON Producto TO ADMIN;
+
+
+
+verificar SID
+SELECT instance_name FROM v$instance;
+
+********************************************************************Configurar sql developer 
+configurar los archivos listener y tnsnames
+
+deben de tener el SID
+
+SELECT INSTANCE_NAME FROM V$INSTANCE;
+
+REINICIAR EL SID
+
+
+1)Cambia al directorio de 
+Escribe el siguiente comando en CMD para acceder al directorio BIN de Oracle, donde se encuentran las utilidades, incluyendo lsnrctl:
+cmd
+
+cd C:\Oracle\dbhomeFree\BIN
+
+verificar listener 
+lsnrctl services
+
+
+detener el listener
+
+lsnrctl stop 
+
+Iniciar el listener
+
+lsnrctl start 
+
+

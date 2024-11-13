@@ -1,0 +1,702 @@
+Define la programación orientada a objetos???????????????
+
+organiza el desarrollo de software en torno a objetos
+son instancias de clases. Las clases actúan como plantillas que definen atributos (datos) y métodos (comportamientos)
+
+Los pilares fundamentales de la POO incluyen:
+
+Encapsulamiento: Permite agrupar los datos y los métodos que los manipulan el mismo objeto
+
+
+Herencia: Facilita la reutilización de código al permitir que una clase herede propiedades y comportamientos de otra clase
+
+
+Polimorfismo: Permite que diferentes clases implementen métodos con el mismo nombre pero comportamientos distintos
+
+
+Abstracción: es el proceso de identificar y modelar los atributos y comportamientos  de un objeto, 
+para exponer solo lo necesario para la interacción con el objeto
+
+Define lo que es un framework??
+
+Es un conjunto de herramientas, bibliotecas  permite facilitar el desarrollo de software
+
+
+Define el concepto de los principios solid???
+
+son un conjunto de cinco reglas fundamentales que se usan para el diseño de software orientado a objetos,
+para la creación de sistemas más robustos y mantenible
+
+S - Single Responsibility Principle (SRP) Principio de Responsabilidad Única:
+
+Cada clase o módulo debe tener una única responsabilidad 
+
+O - Open/Closed Principle (OCP)  Principio Abierto/Cerrado :
+El software debe estar abierto para la extensión, pero cerrado para la modificación
+
+L - Liskov Substitution Principle (LSP)  Principio de Sustitución de Liskov:
+Las clases derivadas deben poder sustituir a sus clases base sin alterar el comportamiento
+
+I - Interface Segregation Principle (ISP) Principio de Segregación de Interfaces:
+Los clientes no deberían verse obligados a depender de interfaces que no usan. Es mejor crear interfaces más pequeñas 
+
+D - Dependency Inversion Principle (DIP)  Principio de Inversión de Dependencias:
+
+Los módulos de alto nivel no deben depender de módulos de bajo nivel, sino que ambos deben depender de abstracciones
+
+
+*******************************Difeencia entre net y net ccore
+.NET Core (ahora .NET)
+
+Es multiplataforma, lo que significa que puede ejecutarse en Windows, Linux y macOS
+
+
+.NET Framework si estás trabajando en una aplicación existente que ya está en esta plataforma y que solo se ejecutará en Windows
+
+ *******************************JavaScript y Ajax
+ 
+Es un lenguaje de programación o de secuencias de comandos que te permite implementar funciones complejas en páginas web
+
+
+AJAX (Asynchronous JavaScript and XML) es una técnica que permite que las aplicaciones web actualicen partes específicas de una página 
+
+Para implementar AJAX, puedes usar el objeto XMLHttpRequest (XHR) en JavaScript, aunque hoy en día es más común usar la API fetch()
+
+
+// Crear una nueva solicitud
+var xhr = new XMLHttpRequest();
+
+// Definir el tipo de solicitud y la URL
+xhr.open('GET', 'https://api.example.com/data', true);
+
+// Manejar la respuesta cuando esté lista
+xhr.onload = function() {
+    if (xhr.status === 200) {
+        // Convertir la respuesta de JSON a un objeto JavaScript
+        var data = JSON.parse(xhr.responseText);
+        console.log(data); // Mostrar los datos en la consola
+    } else {
+        console.error('Error: ' + xhr.status);
+    }
+};
+
+// Enviar la solicitud
+xhr.send();
+
+// Usando la API fetch
+fetch('https://api.example.com/data')
+    .then(response => response.json()) // Convertir la respuesta a JSON
+    .then(data => console.log(data))   // Trabajar con los datos
+    .catch(error => console.error('Error:', error)); // Manejar errores
+	
+	
+	
+ *******************************EntityFrameWork
+
+Es un ORM (Object-Relational Mapper) Mapeador Objeto-Relacional de código abierto para .NET permite trabajar con bases de datos relacionales usando objetos del lenguaje de programación
+en lugar de escribir consultas SQL directamente. Simplifica el acceso a datos al permitir mapear las tablas de una base de datos a clases
+
+
+ADO.NET te permite escribir consultas SQL manualmente se tiene control mas completo sobre las interacciones con la base de datos
+
+
+1)Instalar Entity Framework Core:
+
+Si estás utilizando .NET Core o .NET 5+, puedes instalar EF Core mediante NuGet. Abre la consola del administrador de paquetes o usa la terminal:
+
+dotnet add package Microsoft.EntityFrameworkCore
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add package Microsoft.EntityFrameworkCore.Tools
+
+2) Definir el modelo (clases de entidad)
+
+public class Producto
+{
+    public int ProductoId { get; set; }
+    public string Nombre { get; set; }
+    public decimal Precio { get; set; }
+}
+
+En este ejemplo, la clase Producto se mapeará a una tabla Productos
+
+3)  Crear el contexto de base de datos
+El DbContext es la clase que permite interactuar con la base de datos.
+Necesitas crear una clase que herede de DbContext
+
+public class AppDbContext : DbContext
+{
+    public DbSet<Producto> Productos { get; set; }
+
+    // Configurar la cadena de conexión a la base de datos
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSqlServer("Server=localhost;Database=MiBaseDeDatos;Trusted_Connection=True;");
+    }
+}
+
+4) Crear la base de datos (migraciones)
+Una vez definido el modelo y el contexto, puedes usar migraciones para crear la base de datos automáticamente basada en tus clases
+
+Abrir la terminal o la consola del administrador de paquetes y escribe:
+
+dotnet ef migrations add Inicial
+dotnet ef database update
+
+Genera el código necesario para crear la base de datos y luego aplicará la migración, creando las tablas
+
+5) Usar Entity Framework para operaciones CRUD
+
+Crear un nuevo registro:
+
+using (var context = new AppDbContext())
+{
+    var producto = new Producto
+    {
+        Nombre = "Teclado",
+        Precio = 25.99M
+    };
+
+    context.Productos.Add(producto);
+    context.SaveChanges(); // Guardar los cambios en la base de datos
+}
+
+Leer datos de la base de datos:
+using (var context = new AppDbContext())
+{
+    var productos = context.Productos.ToList(); // Obtener todos los productos
+    foreach (var p in productos)
+    {
+        Console.WriteLine($"{p.ProductoId}: {p.Nombre} - {p.Precio:C}");
+    }
+}
+
+Actualizar un registro existente:
+using (var context = new AppDbContext())
+{
+    var producto = context.Productos.First(p => p.ProductoId == 1);
+    producto.Precio = 30.99M;
+    context.SaveChanges(); // Guardar cambios
+}
+
+
+Eliminar un registro:
+using (var context = new AppDbContext())
+{
+    var producto = context.Productos.First(p => p.ProductoId == 1);
+    context.Productos.Remove(producto);
+    context.SaveChanges(); // Guardar cambios
+	
+}
+
+ **************************Patrones de diseño************************** 
+ 
+son una solución general que se aplican a diferentes problemas de diseño de software
+ 
+Los patrones de diseño más utilizados se clasifican en tres categorías principales
+
+
+*****Patrones creacionales*****
+
+proporcionan diversos mecanismos de creación de objetos, que aumentan la flexibilidad y la reutilización del código existente
+
+
+**patrón de Repositorio
+Crea una capa de abstraccion entre la capa de acceso y la capa de lógica de negocios
+separar la lógica de negocio de la lógica de acceso a datos, proporcionando una capa intermedia que actúa como una interfaz entre los objetos 
+
+**Abstract Factory
+En este patrón, una interfaz crea conjuntos o familias de objetos relacionados sin especificar el nombre de la clase.
+
+**Singleton
+Este patrón de diseño restringe la creación de instancias de una clase a un único objeto.
+se utiliza inyeccion de dependencias
+
+
+*****Patrones estructurales*****
+
+explican cómo ensamblar objetos y clases en estructuras más grandes, a la vez que se mantiene la flexibilidad
+
+*****Patrones de comportamiento*****
+
+Los patrones de comportamiento tratan con algoritmos y la asignación de responsabilidades entre objetos.
+
+ *******************************Spring Boot?
+	
+ *******************************Microservicios
+ 
+ 
+ *******************************Blazer
+  
+  
+ *******************************Kubernets
+ 
+ 
+*******************************UI/UX
+
+
+*******************************pruebas unitarias y depuración?
+
+
+ *******************************Azure DevOps y Github
+
+
+
+
+
+
+definición de Clase y Objeto:
+Clase:Las clases actúan como plantillas que definen atributos (datos) y métodos (comportamientos)
+
+Objeto: Es una instancia de una clase
+
+
+Define uno de los siguientes pilares de la Programación Orientada a Objetos (POO):
+
+Encapsulamiento: Permite agrupar los datos y los métodos que los manipulan en un mismo objeto
+
+
+Herencia: Facilita la reutilización de código al permitir que una clase herede propiedades y comportamientos de otra clase
+
+
+Polimorfismo: Permite que diferentes clases implementen métodos con el mismo nombre pero comportamientos distintos
+
+
+Abstracción: es el proceso de identificar y modelar los atributos y comportamientos  de un objeto, 
+para exponer solo lo necesario para la interacción con el objeto
+
+Define uno de los siguientes niveles de acceso o modificadores de acceso:
+permite espicificar el alcande de las clases
+
+Public: Permite que la clase sea accesible desde cualquier parte del código
+
+Private: Restringe el acceso solo a la clase que contiene el miembro fuera de esa clase nadie puede acceder
+
+Protected:Permite que un miembro sea accesible dentro de su clase y en cualquier clase derivada (subclase)
+
+Default: Es cuando no se específica un modificador de acceso,el comportamiento depende de lo que está definido 
+
+Internal: Solo puede ser accedido dentro del contexto
+
+¿Cuál es la diferencia entre una clase abstracta y una interfaz en C#?
+
+Clase Abstracta:Puede tener métodos abstractos sin implementacion,no se puede instanciar directamente 
+
+Interfaz: Es una colección de métodos propiedades y eventos que debe ser implementados por una clase
+
+ ¿Qué son las funciones Lambda? 
+
+Son expresiones anónimas que se usa para crear delegados su operador es =>
+, el cual separa los parámetros de la expresión 
+Sintaxis
+(parametros) => expresion
+
+¿Cuáles de estos métodos de HTTP conoces?
+•	Get: recupera datos del servidor
+•	Post. Envia los datos al servidor
+•	Put. Actualiza los datos
+•	Patch. Actualiza parcialmente un recurso existente
+•	Delete. Elimina el dato del servidor
+
+¿Cuál es la diferencia entre un método Get y un método Post?
+
+Get: Recupera datos sin realizar ningún cambio en el recurso 
+
+Post:Envia dato al servidor para crear o modificar un recurso 
+
+Si has trabajado Swagger, ¿qué es?
+
+Es un conjunto de herramientas permite diseñar ,construir, documentar y consumir API REST
+(Interfaces de Programación de Aplicaciones) basadas en el protocolo HTTP
+
+
+Menciona buenas practicas para escribir codigo c#
+
+Nombramiento : asignar nombres claros y descriptivos a las variables metodos y clases
+
+Evitar muchos parametros en un metodos
+
+Asignar una unica responsabilidad a cada componente o clase aplicando principios de SOLID
+
+Que es el CLR
+
+Es el common lenaguaje runtime,compila el codigo a un lenguaje intermedio comun (CIL) Common intermadiate languaje
+
+
+Que es el garbage collector??
+
+Es un componente que se encarga de liberar la memoria de los componentes que no se usan se usa el metodo Dispose()
+
+
+Que es un metodo virtual??
+
+Significa que el metodo puede sobreescribirse permite aplicar el principio de polimorfismo
+
+
+Que es linq y como funciona???
+
+anguage-Integrated Query (lenguaje integrado de consultas) es un conjunto de extensiones de c# permite realizar consultas y manipulaciones de datos
+
+var vuatro=from c in cadenas
+           where c= "cuatro"
+		   select
+
+
+
+¿Qué son las APIs REST?
+Son interfaces  de programacion de aplicaciones  que permiten la comunicación entre sistemas a través de HTTP
+
+
+que es soap client?? (Simple Object Access Protocol) Protocolo Simple de Acceso a Objetos:
+
+Soap: Es un protocolo de mensajería basado en XML para intercambio de información en redes distribuidas.
+
+SOAP Client?
+Es una clase en .NET que permite a una aplicación enviar solicitudes y recibir respuestas a través de un servicio web
+
+
+¿Qué es MVC?
+(Modelo-Vista-Controlador) 
+
+Es un patrón de diseño de software separa los componentes de una aplicación en tres partes: Modelo, Vista y Controlador
+
+Modelo: Gestiona los datos y la lógica de negocio de la aplicación.
+
+Vista: Es la interfaz de usuario que muestra la información al usuario.
+
+Controlador: Interpreta las interacciones del usuario, actualiza el modelo y selecciona la vista
+
+
+¿Has trabajado con Bitbucket? Si la respuesta es No, con qué versionadores has trabajado
+
+No
+
+¿Qué es .NET Core y cómo se diferencia de .NET Framework?**
+
+Net Core:Es una plataforma de desarrollo multiplataforma(cross-plataform)
+
+Net Framework: Es una plataforma completa pero está limitada a sistemas operativos de windows
+
+
+¿Qué es Bootstrap y cómo se utiliza
+en aplicaciones ASP.NET Core?
+
+Es ub framework de código abierto utilizado para desarrollar interfaces de usuario web con diseño responsiva y movil
+
+se utuliza agregando la librería en la página
+<link real ="stylesheet" href="https://stackpath.bootsrapcdn.com"
+
+
+
+ 
+¿Qué es jQuery?
+
+Es una biblioteca de javaScript permite la manipulación de documentos HTML
+
+¿Qué es IIS?   
+
+Internet Information Server Es un servidor web
+
+¿Qué es Angular y cuáles son sus principales características que lo diferencian de otros frameworks frontend como React?
+
+Angular es un framework de desarrollo web construido sobre typescript 
+
+Una de las principales características es que proporciona una arquitectura basada en módulos componentes y servicios
+
+¿Qué es un módulo en Angular y por qué es importante?
+
+Es un contenedor que agrupa elementos, facilitando la organización, modularización 
+y mejora del rendimiento
+
+es parte fundamental de la arquitectura de la aplicación  Es una clase decorada con @NgModule
+
+
+es importante porque???
+
+Los módulos son importantes porque hacen que la arquitectura de la aplicación sea más organizada
+
+Organización del código: Los módulos permiten agrupar componentes
+
+Modularización: Al dividir la aplicación en módulos, se logra una separación de responsabilidades
+
+Reutilización: Un módulo puede exportar componentes, servicios
+
+******************************************************************************Estructura de datos 
+
+******************************************************************************Listas y Mapas
+
+Las listas y los mapas son dos tipos de estructuras de datos comúnmente utilizadas en programación
+
+
+Una lista es una colección ordenada de elementos. Los elementos en una lista pueden ser accedidos por su índice (posición)
+
+List<string> lista = new List<string>();
+        
+        // Añadir elementos
+        lista.Add("Elemento 1");
+        lista.Add("Elemento 2");
+		
+Un mapa (también conocido como diccionario o tabla hash) es una colección de pares clave-valor. Cada valor se asocia a una clave única
+
+ Dictionary<string, int> mapa = new Dictionary<string, int>();
+        
+        // Añadir elementos
+        mapa["clave1"] = 1;
+        mapa["clave2"] = 2;
+		
+
+******************************************************************************Diferencia de una carga y una sobre carga 
+
+carga:
+la carga generalmente se refiere a la cantidad de trabajo que un sistema debe manejar o a la cantidad de recursos que consume un proceso
+ 
+ 
+sobre carga :
+La sobrecarga es un concepto que se refiere a la capacidad de definir múltiples métodos, funciones o operadores con el mismo nombre pero 
+con diferentes firmas (diferentes parámetros)
+
+
+public class Calculadora
+{
+    public int Sumar(int a, int b)
+    {
+        return a + b;
+    }
+
+    public double Sumar(double a, double b)
+    {
+        return a + b;
+    }
+
+    public int Sumar(int a, int b, int c)
+    {
+        return a + b + c;
+    }
+}
+
+**********************************************************************que es la inyeccion de dependencias
+ es un patrón de diseño que se utiliza para implementar la inversión de control en la programación
+ 
+ public class Client
+{
+    private readonly IServiceA _serviceA;
+
+    // Inyección a través del constructor
+    public Client(IServiceA serviceA)
+    {
+        _serviceA = serviceA;
+    }
+}
+
+Su propósito es gestionar las dependencias de un objeto
+
+**********************************************************************+direncia entre una fila y una cola
+
+
+las estructuras de datos "fila" (queue) y "cola" (stack) son utilizadas para gestionar colecciones de elementos
+
+Cola o (Queue):
+Una cola es una estructura de datos en la que los elementos se añaden al final y se eliminan del principio
+
+Queue<string> queue = new Queue<string>();
+        
+        // Añadir elementos
+        queue.Enqueue("Elemento 1"); se elimina del principio
+        queue.Enqueue("Elemento 2");
+		
+Cuando llamas a Dequeue(), el primer elemento agregado (Elemento 1) es el que se eliminará de la cola.
+
+Pila o (Stack):
+Se utiliza en situaciones donde  el último elemento es agregado, ya que será el primero en ser eliminado.
+
+
+	Stack<string> stack = new Stack<string>();
+        
+        // Añadir elementos
+        stack.Push("Elemento 1");
+        stack.Push("Elemento 2"); se elimina
+		
+		string removedElement = stack.Pop();
+		
+Cola (Queue): FIFO  First In, First Out (Primero en Entrar, Primero en Salir) , añade al final, elimina del principio.
+Pila (Stack): LIFO Last In, First Out (Último en Entrar, Primero en Salir)., añade y elimina del mismo extremo.
+
+
+***********************************memoria aen cache API REST*********************************
+
+memoria caché en un API REST mejora el rendimiento al reducir la carga en el servidor y minimizar el tiempo de respuesta para solicitudes
+ 
+Caché en Memoria (In-Memory Cache)
+El caché en memoria es el almacenamiento más sencillo , es ideal para guardar datos en el servidor por un corto periodo de tiempo.
+
+Microsoft.Extensions.Caching.Memory
+
+
+
+**********************************SoapUI
+
+SoapUI permite realizar pruebas de API al pasarle la URL y un esquema (generalmente en formato XML o JSON) 
+
+
+https://www.soapui.org/downloads/soapui/
+
+clic en "Download SoapUI Open Source"
+
+
+**********************************Manejo de Errores EN API
+
+Manejo específico de excepciones en controladores	
+
+se puede utilizar bloques try-catch directamente dentro de tus acciones
+
+
+try
+    {
+        var item = await _service.GetItemById(id);
+        if (item == null)
+        {
+            return NotFound();
+        }
+        return Ok(item);
+    }
+    catch (CustomNotFoundException ex)
+    {
+        return NotFound(new { message = ex.Message });
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, new { message = "Error interno del servidor" });
+    }
+
+
+
+
+
+**********************************CI/CD (integración y la distribución continuas)
+
+Automatizan los procesos de integración de código, pruebas y distribución de aplicaciones.
+
+ 
+es la sigla para la integración y la distribución o implementación continuas
+ 
+CI(Integración Continua): consiste en incorporar los cambios de código a un repositorio compartido de código fuente de forma automática y periódica
+
+CD(Entrega o Despliegue Continuo): es un proceso de dos partes en el que se integran
+Entrega Continua: Es el proceso en el que los cambios de código que pasan las pruebas automatizadas se integran en un repositorio 
+
+Despliegue Continuo: Automatiza el proceso completo hasta producción, de modo que cualquier cambio que pase las pruebas automatizadas se despliega automáticamente en producción 
+
+Mantén una estructura de ramas clara, donde la rama principal (ej. main o master) 
+se use para la versión estable y las ramas de características o desarrollo para cambios nuevos
+
+
+
+
+Se puede implementar CI/CD utilizando la herramienta de automatización de GitHub "GitHub Actions"
+
+
+main
+
+pre-Producion
+QA-Test
+Dev-Desarrollo
+
+
+Flujo de merges:
+Dev-Desarrollo → QA-Test: Aquí se prueban los cambios.
+QA-Test → pre-producción: Tras las pruebas de calidad, el código es promovido a una etapa previa a producción.
+pre-producción → master: Solo el código completamente validado llega a producción.
+
+Dev-Desarrollo  →  QA-Test  →  pre-producción  →  master
+ 
+La idea es organizar el código en ramas que representen diferentes etapas del ciclo de vida del software,
+
+
+Pasos para implementar CI/CD en la versión gratuita de GitHub:
+
+1)Crear el repositorio y estructura de ramas:
+
+Crea ramas como main, Dev, QA-Test, y pre-producción.
+Define reglas de protección de ramas para controlar qué ramas pueden recibir merges y en qué condiciones (por ejemplo, solo hacer merge a main si las pruebas automáticas pasan).
+
+2)Configurar GitHub Actions:
+
+Dentro de tu repositorio, ve a la pestaña de Actions.
+Puedes elegir entre flujos de trabajo predefinidos o crear el tuyo desde cero.
+Un archivo básico de CI se define en .github/workflows/ y puede verse así:
+
+
+**********************************Sonar QUBE
+
+
+**********************************Extensiones viusal studio cocce
+
+DevTools para chrome
+
+Material Icon Them
+Cambia los iconos predeterminados de Visual Studio
+
+Path Intellisense
+Se utiliza para el autocompletado de rutas de archivos en tu proyecto
+
+
+
+**********************************Django
+
+es un framework de desarrollo web de alto nivel 
+es una estructura de código abierto sin costo que acelera el desarrollo de las aplicaciones web que se crean en el lenguaje de programación Python
+
+ características clave de Django:
+ 
+ Modelo-Vista-Controlador (MVC): Django sigue el patrón arquitectónico Modelo-Vista-Controlador
+ 
+ ORM (Object-Relational Mapping): Django incluye un sistema ORM que permite interactuar con bases de datos como PostgreSQL, MySQL, SQLite
+
+
+QA-Test
+Dev-Desarrollo
+
+
+
+***********************************************Blazor
+
+Blazor es un framework para la construcción de aplicaciones SPA (Single Page Application) es una aplicación web de una sola página.. 
+
+
+¿En qué se diferencia Blazor de otros frameworks SPA como Angular, React o Vue?
+
+Compartir directamente código entre cliente y servidor.
+***********************************************Razor
+
+Razor es un lenguaje de marcado del lado del servidor utilizado para crear páginas web dinámicas con .NET Core y .NET Framework. Se utiliza principalmente junto con ASP.NET Core.
+
+***********************************************nodeJS
+
+
+es una plataforma de ejecución de JavaScript en el lado del servidor
+
+
+Angular CLI, que es la herramienta de línea de comandos para Angular, requiere Node.js para instalarse y ejecutarse.
+
+**********************************************PostgresSQL
+
+
+
+**********************************************Mongo
+
+
+
+**********************************************Kafka
+
+
+
+
+**********************************************Kubernetes
+
+Es una plataforma portable y extensible de código abierto para administrar cargas de trabajo y servicios. Kubernetes facilita la automatización y la configuración 
+
+Principales caracteristicas:z
+Es una plataforma de contenedores,soprte para microservicios y portabilidad a la nube
+
+**********************************************git
+
+

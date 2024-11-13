@@ -1,0 +1,84 @@
+Para subir tu proyecto a GitHub después de haber inicializado el repositorio y añadido tus archivos, sigue estos pasos:
+
+Abre Git Bash: Inicia Git Bash en la carpeta de tu proyecto.
+
+
+El error ocurre porque Git no tiene configurada tu identidad (nombre y correo electrónico) para los commits. 
+Para solucionarlo, necesitas configurar tu nombre y correo en Git. 
+Puedes hacerlo de forma global (para todos tus repositorios) o solo para el repositorio actual.
+
+Opción 1: Configurar de manera global
+Esto establecerá tu nombre y correo para todos los repositorios en tu máquina.
+
+Configura tu correo:
+
+
+git config --global user.email "sayoslp@gmail.com"
+Configura tu nombre:
+
+git config --global user.name "Esau Hernandez"
+
+
+
+1)Inicializa un repositorio Git 
+git init
+
+2)Agrega el repositorio remoto
+git remote add origin https://github.com/EsauHernandez21/API-REST-Producto.git
+
+valida repositorios remotos existentes
+git remote -v
+
+3)Agregar todos los archivos
+git add .
+
+
+4)Realizar commit
+git commit -m "Subiendo proyecto completo"
+
+5)Subir proyecto a GitHub
+
+Aumenta el tamaño del buffer de Git: El error puede estar relacionado con el tamaño de los archivos que estás intentando subir. 
+Intenta aumentar el buffer de Git con el siguiente comando:
+git config --global http.postBuffer 524288000
+git push -u origin master
+
+
+cd C:\Esau\Proyectos\WebApiEntity
+git init
+git remote add origin https://github.com/EsauHernandez21/API-REST-Producto.git
+git add .
+git commit -m "Subiendo proyecto completo"
+git push -u origin master
+
+
+git config --global http.postBuffer 524288000
+git clone https://github.com/EsauHernandez21/API-REST-Producto.git
+git clone --depth 1 https://github.com/EsauHernandez21/API-REST-Producto.git
+
+
+Elimina la Carpeta .github y despues ejecutar los comandos
+
+git add -A
+git commit -m "Remove GitHub Actions configuration"
+git push origin master  # o la rama que estés 
+
+Tú dijiste:
+lo hago con la sesion abierta de github??
+ChatGPT Plus
+ChatGPT
+No es necesario tener la sesión abierta de GitHub en el navegador para ejecutar los comandos de Git Bash y subir tu proyecto. Sin embargo, aquí hay algunas consideraciones:
+
+Acceso a GitHub: Cuando haces un git push por primera vez a un repositorio, es posible que necesites autenticarte. Esto se puede hacer ingresando tu nombre de usuario y token de acceso personal (en lugar de tu contraseña) si estás utilizando HTTPS. Así que, aunque no necesites estar en sesión en el navegador, necesitarás las credenciales para autenticarte.
+
+Token de acceso personal: Si no has configurado un token de acceso personal, debes crear uno en tu cuenta de GitHub. Aquí te muestro cómo hacerlo:
+
+Ve a tu perfil de GitHub y selecciona Settings.
+En la barra lateral, haz clic en Developer settings.
+Selecciona Personal access tokens y luego haz clic en Tokens (classic).
+Crea un nuevo token y asegúrate de darle permisos para repositorios (puedes marcar la opción repo).
+Guardar credenciales: Si usas Git con HTTPS, puedes optar por almacenar tus credenciales en el caché de Git para no tener que ingresarlas cada vez. Para hacerlo, puedes usar:
+
+bash
+Copiar código
+git config --global credential.helper cache

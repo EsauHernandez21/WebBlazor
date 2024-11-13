@@ -1,0 +1,337 @@
+﻿@page "/productos"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>Productos</h3>
+
+<p>Esta página mostrará los productos obtenidos de la API o el producto específico buscado.</p>
+
+<h3>Buscar Producto por ID</h3>
+
+<div>
+    <input type="number" placeholder="Ingrese el ID del producto" @bind="productoIdBuscar" />
+    <button class="btn btn-primary" @onclick="BuscarProductoPorId">Buscar</button>
+
+    <!-- Botón para crear producto"-->
+    <button class="btn btn-success" @onclick="MostrarFormularioCreacion" style="margin-left: 10px;">Crear Nuevo Producto</button>
+
+ </div>
+
+@if (mostrarFormularioCreacion)
+{
+    <h3>Crear Nuevo Producto</h3>
+    <EditForm Model="nuevoProducto" OnValidSubmit="CrearProducto">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <InputText id="nombre" class="form-control" @bind-Value="nuevoProducto.nombre" />
+        </div>
+
+        <div class="form-group">
+            <label for="descripcion">Descripción:</label>
+            <InputText id="descripcion" class="form-control" @bind-Value="nuevoProducto.descripcion" />
+        </div>
+
+        <div class="form-group">
+            <label for="precio">Precio:</label>
+            <InputNumber id="precio" class="form-control" @bind-Value="nuevoProducto.precio" />
+        </div>
+
+        <div class="form-group">
+            <label for="stock">Stock:</label>
+            <InputNumber id="stock" class="form-control" @bind-Value="nuevoProducto.stock" />
+        </div>
+
+        <button type="submit" class="btn btn-success">Crear Producto</button>
+    </EditForm>
+}
+
+@if (productos == null)
+{
+    <p>Cargando...</p>
+}
+else if (productos.Count == 0)
+{
+    <p>No se encontraron productos.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var producto in productos)
+            {
+                <tr>
+                    <td>@producto.productoId</td>
+                    <td>@producto.nombre</td>
+                    <td>@producto.descripcion</td>
+                    <td>@producto.precio</td>
+                    <td>@producto.stock</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" @onclick="() => EditarProducto(producto)">Actualizar</button>
+                        <button class="btn btn-danger btn-sm" @onclick="() => EliminarProducto(producto.productoId)">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (isEditing)
+{
+    <h3>Editar Producto</h3>
+    <EditForm Model="productoEdicion" OnValidSubmit="ActualizarProducto">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <InputText id="nombre" class="form-control" @bind-Value="productoEdicion.nombre" />
+        </div>
+
+        <div class="form-group">
+            <label for="descripcion">Descripción:</label>
+            <InputText id="descripcion" class="form-control" @bind-Value="productoEdicion.descripcion" />
+        </div>
+
+        <div class="form-group">
+            <label for="precio">Precio:</label>
+            <InputNumber id="precio" class="form-control" @bind-Value="productoEdicion.precio" />
+        </div>
+
+        <div class="form-group">
+            <label for="stock">Stock:</label>
+            <InputNumber id="stock" class="form-control" @bind-Value="productoEdicion.stock" />
+        </div>
+
+        <button type="submit" class="btn btn-success">Actualizar Producto</button>
+        <button type="button" class="btn btn-secondary" @onclick="CancelarEdicion">Cancelar</button>
+    </EditForm>
+}
+
+@if (!string.IsNullOrEmpty(mensajeError))
+{
+    <p style="color: red;">@mensajeError</p>
+}
+
+
+
+
+@code {
+    private int productoIdBuscar;
+    private ProductoDto producto;
+    private ProductoDto productoEdicion;
+    private bool isEditing = false;  // Estado para saber si estamos en modo edición
+    private string mensajeError;
+    private List<ProductoDto> productos = new List<ProductoDto>();
+
+    private ProductoDto nuevoProducto = new ProductoDto(); // Nuevo modelo para crear producto
+    private bool mostrarFormularioCreacion = false; // Estado para mostrar/ocultar el formulario de creación
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarTodosLosProductos();
+    }
+
+    private async Task CargarTodosLosProductos()
+    {
+        try
+        {
+            // Solo asignamos algunos productos iniciales en memoria
+            /*productos = new List<ProductoDto>
+            {
+                new ProductoDto { productoId = 1, nombre = "Producto 1", descripcion = "Descripción 1", precio = 100, stock = 10 },
+                new ProductoDto { productoId = 2, nombre = "Producto 2", descripcion = "Descripción 2", precio = 200, stock = 20 }
+            };*/
+
+
+            productos = await Http.GetFromJsonAsync<List<ProductoDto>>("http://localhost:5150/api/Productos/GetAllProducts");
+            mensajeError = null;
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error al obtener los productos: {ex.Message}";
+            productos = new List<ProductoDto>();
+        }
+    }
+
+    private async Task BuscarProductoPorId()
+    {
+        try
+        {
+            /*var productoEncontrado = productos.FirstOrDefault(p => p.productoId == productoIdBuscar);
+            if (productoEncontrado != null)
+            {
+                productos = new List<ProductoDto> { productoEncontrado };
+                mensajeError = null;
+            }
+            else
+            {
+                productos.Clear();
+                mensajeError = $"No se encontró el producto con ID {productoIdBuscar}.";
+            }*/
+
+
+            var response = await Http.GetAsync($"http://localhost:5150/api/Productos/GetProductById/{productoIdBuscar}");
+            if (response.IsSuccessStatusCode)
+            {
+                var productoEncontrado = await response.Content.ReadFromJsonAsync<ProductoDto>();
+                productos = new List<ProductoDto> { productoEncontrado };
+                mensajeError = null;
+            }
+            else
+            {
+                productos.Clear();
+                mensajeError = $"No se encontró el producto con ID {productoIdBuscar}. Código de estado: {response.StatusCode}";
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error de conexión: {ex.Message}";
+            productos.Clear();
+        }
+    }
+
+    private async Task EliminarProducto(int productoId)
+    {
+        try
+        {
+
+            /*var productoAEliminar = productos.FirstOrDefault(p => p.productoId == productoId);
+            if (productoAEliminar != null)
+            {
+                productos.Remove(productoAEliminar);  // Eliminar producto de la lista en memoria
+            }
+            else
+            {
+                mensajeError = $"Error al eliminar el producto con ID {productoId}. No se encontró.";
+            }*/
+
+
+            var response = await Http.DeleteAsync($"http://localhost:5150/api/Productos/DeleteProductById/{productoId}");
+            if (response.IsSuccessStatusCode)
+            {
+                productos = productos.Where(p => p.productoId != productoId).ToList(); // Remueve el producto de la lista local
+            }
+            else
+            {
+                mensajeError = $"Error al eliminar el producto con ID {productoId}. Código de estado: {response.StatusCode}";
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error de conexión: {ex.Message}";
+        }
+    }
+
+    private void EditarProducto(ProductoDto productoSeleccionado)
+    {
+        productoEdicion = new ProductoDto
+            {
+                productoId = productoSeleccionado.productoId,
+                nombre = productoSeleccionado.nombre,
+                descripcion = productoSeleccionado.descripcion,
+                precio = productoSeleccionado.precio,
+                stock = productoSeleccionado.stock
+            };
+        isEditing = true;  // Activar el modo edición
+    }
+
+    private async Task ActualizarProducto()
+    {
+        try
+        {
+
+            /*var productoExistente = productos.FirstOrDefault(p => p.productoId == productoEdicion.productoId);
+            if (productoExistente != null)
+            {
+                productoExistente.nombre = productoEdicion.nombre;
+                productoExistente.descripcion = productoEdicion.descripcion;
+                productoExistente.precio = productoEdicion.precio;
+                productoExistente.stock = productoEdicion.stock;
+
+                mensajeError = null;
+                isEditing = false;
+            }
+            else
+            {
+                mensajeError = $"No se encontró el producto con ID {productoEdicion.productoId}.";
+            }*/
+
+
+            var response = await Http.PutAsJsonAsync($"http://localhost:5150/api/Productos/updateProduct/{productoEdicion.productoId}", productoEdicion);
+            if (response.IsSuccessStatusCode)
+            {
+                mensajeError = null;
+                isEditing = false;
+                await CargarTodosLosProductos(); // Recargar los productos después de la actualización
+            }
+            else
+            {
+                mensajeError = $"Error al actualizar el producto. Código de estado: {response.StatusCode}";
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error de conexión: {ex.Message}";
+        }
+    }
+
+    private void CancelarEdicion()
+    {
+        isEditing = false;  // Cancelar el modo de edición
+        productoEdicion = null;  // Limpiar el modelo de edición
+    }
+
+    // Método para mostrar el formulario de creación
+    private void MostrarFormularioCreacion()
+    {
+        mostrarFormularioCreacion = true;  // Cambia el estado para mostrar el formulario de creación
+    }
+
+    // Método para crear un nuevo producto
+    private async Task CrearProducto()
+    {
+        try
+        {
+            var response = await Http.PostAsJsonAsync("http://localhost:5150/api/Productos/CreateProduct", nuevoProducto);
+            if (response.IsSuccessStatusCode)
+            {
+                mensajeError = null;
+                nuevoProducto = new ProductoDto();  // Limpiar formulario de creación
+                mostrarFormularioCreacion = false;  // Ocultar el formulario de creación después de crear el producto
+                await CargarTodosLosProductos(); // Recargar la lista de productos
+            }
+            else
+            {
+                mensajeError = $"Error al crear el producto. Código de estado: {response.StatusCode}";
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error de conexión: {ex.Message}";
+        }
+    }
+
+
+    public class ProductoDto
+    {
+        public int productoId { get; set; }
+        public string nombre { get; set; }
+        public string descripcion { get; set; }
+        public decimal precio { get; set; }
+        public int stock { get; set; }
+    }
+}

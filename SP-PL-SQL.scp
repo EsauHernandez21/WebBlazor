@@ -1,0 +1,101 @@
+CREATE OR REPLACE PROCEDURE InsertarProducto (
+    p_nombre      IN VARCHAR2,
+    p_descripcion IN VARCHAR2,
+    p_precio      IN NUMBER,
+    p_stock       IN NUMBER
+) AS
+BEGIN
+    INSERT INTO productos (nombre, descripcion, precio, stock)
+    VALUES (p_nombre, p_descripcion, p_precio, p_stock);
+    
+    COMMIT; -- Confirmar la transacción
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK; -- Revertir la transacción en caso de error
+        RAISE;     -- Volver a lanzar la excepción
+END;
+/
+
+
+BEGIN
+    INSERTARPRODUCTO('Nombre del Producto', 'Descripción del producto', 100.00, 50);
+END;
+
+---------------------------------------------CONSULTA
+
+CREATE OR REPLACE PROCEDURE SP_GET_PRODUCTO_BY_ID (
+    p_productoid IN NUMBER,
+    p_cursor OUT SYS_REFCURSOR
+) AS
+BEGIN
+    OPEN p_cursor FOR
+    SELECT * FROM producto WHERE productoid = p_productoid;
+END SP_GET_PRODUCTO_BY_ID;
+
+
+SET SERVEROUTPUT ON;
+DECLARE
+    p_cursor SYS_REFCURSOR;
+    v_productoid NUMBER := 0;  -- Cambia aquí el ID que deseas buscar
+    v_nombre producto.nombre%TYPE;
+    v_descripcion producto.descripcion%TYPE;
+    v_precio producto.precio%TYPE;
+    v_stock producto.stock%TYPE;
+BEGIN
+    -- Llamada al procedimiento almacenado
+    SP_GET_PRODUCTO_BY_ID(v_productoid, p_cursor);
+
+    -- Procesar el cursor de salida
+    LOOP
+        FETCH p_cursor INTO v_productoid, v_nombre, v_descripcion, v_precio, v_stock;
+        EXIT WHEN p_cursor%NOTFOUND;
+
+        -- Imprimir los resultados en la consola
+        DBMS_OUTPUT.PUT_LINE('ProductoId: ' || v_productoid);
+        DBMS_OUTPUT.PUT_LINE('Nombre: ' || v_nombre);
+        DBMS_OUTPUT.PUT_LINE('Descripcion: ' || v_descripcion);
+        DBMS_OUTPUT.PUT_LINE('Precio: ' || v_precio);
+        DBMS_OUTPUT.PUT_LINE('Stock: ' || v_stock);
+    END LOOP;
+
+    -- Cerrar el cursor
+    CLOSE p_cursor;
+END;
+
+---------------------------------------------UPDATE
+
+CREATE OR REPLACE PROCEDURE SP_UPDATE_PRODUCTO (
+    p_productoid IN NUMBER,
+    p_nombre IN VARCHAR2,
+    p_descripcion IN VARCHAR2,
+    p_precio IN NUMBER,
+    p_stock IN NUMBER
+) AS
+BEGIN
+    UPDATE producto
+    SET 
+        nombre = p_nombre,
+        descripcion = p_descripcion,
+        precio = p_precio,
+        stock = p_stock
+    WHERE PRODUCTOID = p_productoid;
+
+    COMMIT; -- Asegúrate de hacer commit si no estás usando un bloque de transacción
+END;
+
+---------------------------------------------DELETE
+
+CREATE OR REPLACE PROCEDURE SP_DELETE_PRODUCTO (
+    p_productoid IN NUMBER
+) AS
+BEGIN
+    DELETE FROM producto
+    WHERE PRODUCTOID = p_productoid;
+
+    COMMIT; -- Realiza el commit para guardar los cambios
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('No se encontró el producto con PRODUCTOID: ' || p_productoid);
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Ocurrió un error: ' || SQLERRM);
+END;

@@ -1,0 +1,390 @@
+"ng" se utiliza para identificar directivas y componentes que son parte del framework Angular
+comando ng generate ejecuta esquemas para crear aplicaciones,
+CLI  (Command Line Interface). Interfaz de Línea
+
+https://certificates.dev/angular?friend=ANGULARTRAINING
+
+Udemy como Coursera of
+1**) Diferencia entre la compilacion JIT (Just in time) vs AOT Ahead-of-time Compilación anticipada
+
+runtime(Tiempo en ejecucuion)
+JIT se ejecuta cada vez para cada usuario en tiempo de ejecución utilizando un conjunto diferente de bibliotecas.
+
+es un proceso en el cual el código fuente se compila en tiempo de ejecución, antes de que se ejecute
+se utiliza típicamente en entornos de ejecución de máquinas virtuales, como Java Virtual Machine (JVM) o Common Language Runtime (CLR) en el caso de .NET.
+
+AOT
+convierte plantillas y código de TypeScript en eficiente código JavaScript durante la fase de construcción antes de que el navegador descargue y corra el código.
+
+el compilador se ejecuta una vez en el tiempo de construcción utilizando un conjunto de bibliotecas.
+
+mejora en el performance y es mas ligero realiza un check en el template
+
+2**)Que es un modulo y cuales son sus partes (PE)
+
+es una parte fundamental de la arquitectura de la aplicación agrupa componentes, directivas, servicios y bloques de construcción 
+  
+ y sus partes son:
+1)Decorador @NgModule: Cada módulo en Angular está decorado con @NgModule
+ 
+2)Declaraciones (declarations):La propiedad declarations del decorador @NgModule enumera los componentes
+ 
+3)Importaciones (imports):
+La propiedad imports del decorador @NgModule especifica otros módulos cuyas exportaciones deben estar disponibles dentro de este módulo
+
+4)Proveedores (providers):
+La propiedad providers del decorador @NgModule enumera los servicios que el módulo proporciona
+
+5)Exportaciones (exports):
+La propiedad exports del decorador @NgModule enumera los componentes, directivas y pipes 
+
+
+Un módulo Angular puede tener también otros metadatos opcionales, como entryComponents, que se utiliza para componentes que son creados dinámicamente,
+ y bootstrap
+ 
+ 
+3**) Cuales son los ciclos de vida de un componente para angular
+
+Al momento de cargar el render, se ejecuta el ciclo de vida: Constructor: se ejecuta una única vez y es el primero en ejecutarse. 
+ngOnChange: se ejecuta antes y durante el render, valida todos
+
+
+El constructor de la clase de componente se ejecuta primero, antes de la ejecución de cualquier otro lifecycle hook. 
+Si necesitamos inyectar dependencias en el componente, el constructor es el mejor 
+
+Después de ejecutar el constructor, Angular ejecuta sus métodos de enganche de ciclo de vida en un orden específico.
+ 
+ngOnChanges: Este evento se ejecuta cada vez que se cambia un valor de un input control dentro de un componente. 
+ngOnInit: Se ejecuta una vez que Angular ha desplegado los data-bound properties(variables vinculadas a datos) 
+          se utiliza para realizar tareas de inicialización cuando se inicializa un componente.
+ngDoCheck: Se activa cada vez que se verifican las propiedades de entrada de un componente.
+ngAfterViewInit():Este método se llama después de que Angular haya inicializado la vista del componente y sus vistas secundarias
+ngOnDestroy():Este método se llama justo antes de que Angular destruya el componente y elimine sus vistas de la memoria.
+
+ngAfterContentInit: Se ejecuta cuando Angular realiza cualquier muestra de contenido dentro de las vistas de componentes y justo después de ngDoCheck. 
+ngAfterContentChecked: Se ejecuta cada vez que el contenido del componente ha sido verificado por el mecanismo de detección de cambios de Angular
+
+
+4**) Que es lazy  loading de  modulos (PE)
+Es una técnica que consiste en cargar módulos de forma diferida, es decir, cargarlos bajo demanda, en lugar de cargar todos 
+no se cargan cuando se inicia la aplicación, sino que se cargan de manera incremental según la navegación 
+
+Para implementar Lazy Loading en Angular, se utiliza la función loadChildren en la configuración de rutas
+
+const routes: Routes = [
+  { path: 'dashboard', component: DashboardComponent },
+  { path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
+  // Otra rutas...
+];
+
+En este ejemplo, cuando el usuario navega a la ruta '/admin', Angular cargará el módulo AdminModule solo en ese momento,
+
+
+5**) Diferencia entre observable y promesa(PE)
+
+son herramientas o gestión de datos para manejar flujos asíncronos
+
+Las promesas tienen un comportamiento asincrónico(es cuando envía un mensaje sin esperar una respuesta inmediata.): una vez que se resuelven o rechazan, se ejecutará el código asociado en la cola de tareas
+Es un objeto que representa un valor que se resolverá o rechazará.
+
+
+Los observables pueden ser síncronos(sucede al mismo tiempo.) o asíncronos(no sucede al mismo tiempo),
+Es un mecanismo que permite manejar flujos de datos asíncronos. Se trata de una fuente de datos que puede emitir múltiples valores
+
+ 
+
+6**) Comunicar informacion entre componentes no realcionados
+
+hay varias estrategias que puedes emplear:
+ 
+Servicios compartidos:
+
+Crea un servicio que actúe como intermediario para compartir datos entre componentes.
+
+Gestión del estado con RxJS y BehaviorSubject:
+
+Utiliza RxJS para crear un servicio de gestión del estado centralizado, como el patrón Redux
+
+Eventos personalizados con EventEmitter:
+
+Puedes crear un servicio que emita eventos personalizados utilizando un EventEmitter
+
+
+7**)Diferencia entre view child vs Content child
+
+son decoradores utilizados para acceder a elementos del DOM desde un componente
+ViewChild : hijo dentro del template. ContentChild : hijo dentro del componente (como host)
+
+@ViewChild permite a un componente acceder a un elemento hijo que está declarado en su template (plantilla) por referencias.
+
+Se puede acceder al elemento tanto en el ciclo de vida ngOnInit como después de la inicialización.
+Ejemplo:
+
+import { Component, ViewChild, ElementRef } from '@angular/core';
+
+@Component({
+  selector: 'app-child-view',
+  template: '<div #childElement></div>'
+})
+export class ChildViewComponent {
+  @ViewChild('childElement') childElement: ElementRef;
+}
+
+@ContentChild
+Se utiliza para acceder a elementos que son proyectados en un componente a través de su plantilla utilizando la etiqueta <ng-content>.
+
+Se puede acceder al elemento tanto en el ciclo de vida ngAfterContentInit como después de la inicialización.
+
+Ejemplo:
+
+import { Component, ContentChild, ElementRef } from '@angular/core';
+
+@Component({
+  selector: 'app-child-content',
+  template: '<ng-content></ng-content>'
+})
+export class ChildContentComponent {
+  @ContentChild('contentChild') contentChild: ElementRef;
+}
+html
+Copy code
+<app-child-content>
+  <div #contentChild></div>
+</app-child-content>
+
+
+8**)Que es http interceptor
+es un mecanismo o servicio que te permite interceptar las solicitudes(request) HTTP  y respuestas(response) HTTP. realizadas por tu aplicación
+ 
+Los interceptores se implementan utilizando la interfaz HttpInterceptor 
+Esta interfaz tiene un método llamado intercept() que debe ser implementado
+
+Ejemplo: 
+
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
+import { Observable } from 'rxjs';
+ 
+@Injectable()
+export class AuthInterceptor implements HttpInterceptor {
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    // Clone the request and set the new header in one step.
+    const authReq = req.clone({headers: req.headers.set('Authorization', 'my-auth-token')});
+ 
+    // send the newly created request
+    return next.handle(authReq);
+  }
+}
+
+import { AuthInterceptor } from './auth-interceptor';
+ 
+@NgModule({
+  // ...
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+  ]
+})
+export class AppModule 
+
+
+
+9**)Que es una directiva y que tipos hay (PE)
+
+Es una clase permite añadir o modificar comportamiento en elementos del DOM. Las directivas no tienen una plantilla propia
+
+Tipos de directivas
+
+Directiva estructural
+Se utilizan para cambiar el diseño del DOM agregando o eliminando elementos del DOM.
+
+Ejemplos: *ngIf, *ngFor, *ngSwitch.
+
+Directiva de atributos
+Alteran el aspecto o el comportamiento de un elemento del DOM existente sin modificar su estructura.
+
+Ejemplos: ngModel, ngClass, ngStyle.
+
+Ejemplo:
+En el método handler, accede a la referencia del elemento y cambia el color del texto.
+import { Directive, ElementRef, HostListener } from '@angular/core'; 
+@Directive ({
+    selector: '[highlight]',
+})
+export class highlightDirective {
+    constructor(private eleRef) {}
+    @HostListener ('mouseover') onMouseover () {
+        this.eleRef.nativeElement.style.color = 'red'; 
+    }
+    @HostListener ('mouseleave') onMouseLeave () {
+        this.eleRef.nativeElement.style.color = 'black';
+    }
+}
+
+10**)Que es un pipe
+es una característica que te permite transformar datos antes de mostrarlos en la interfaz de usuario
+son tuberías o canales los cuales son denotados con el carácter | (pipe)
+ 
+ AsyncPipe: Utilizado para suscribirse a observables o promesas y recuperar los datos que emiten de forma asíncrona.
+ 
+ 
+ Un pipe acepta propiedads
+ 
+ 11**)Que resulta de ng build
+ crea una compilación de tu aplicación Angular en un directorio específico
+ 
+ Una vez finalizada la aplicación debemos subirla a nuestro servidor real en Internet
+ f:\angularya\proyecto016>ng build
+ 
+ Luego de este proceso se genera una carpeta llamada 'dist' que contiene todos los archivos
+ 
+ ng build también nos permite hacer más cosas enfocadas a desplegar en producción:
+ 
+Tree Shaking
+precompila el código de forma que el cliente no tenga que bajarse el compilador cuando visita la web
+ 
+Minification: Remueve el exceso de espacios en blanco, comentarios y tokens opcionales.
+
+Uglificaction: Reescribe el código para hacerlo más corto.
+
+12**)Como optimizar la perfomance de angular
+Utiliza el lazy loading para cargar módulos solo cuando sea necesario.
+    
+Optimización del tamaño de los bundles: Minimiza y optimiza el tamaño de los bundles JavaScript y CSS
+
+AOT (Ahead-of-Time) Compilation: Utiliza la compilación AOT en lugar de la compilación Just-In-Time (JIT) 
+
+Optimización de las consultas HTTP: Minimiza las solicitudes HTTP y optimiza las consultas HTTP
+
+Production Mode:Despliega el modo de producción lo cual quita algunos procesos que se llevan en el modo desarrollo.
+
+Buenas practicas
+
+Modo stric
+Configurar en modo de poilcia
+Activando esta bandera configura a detectar errores de antemano y permiten que la CLI Command Line Interface) Interfaz de Línea de Comandos realice optimizaciones avanzadas en tu aplicación
+
+Para crear un nuevo espacio de trabajo y aplicación utilizando el modo estricto, ejecuta el siguiente comando:
+ng new [project-name] --strict
+
+
+Para crear una nueva aplicación en modo estricto dentro de un espacio de trabajo existente que no esté en modo estricto, ejecuta el siguiente comando
+ng generate application [project-name] --strict
+
+13**)Que son los spa (Single Page Applications) Aplicación de Página Única
+son aplicaciones web que interactúan con el usuario cargando de manera dinámica y sin recargar la página completa
+
+14**)que es angular CLI (Command Line Interface). Interfaz de Línea de Comandos
+(Command Line Interface) es una herramienta de línea de comandos que se utiliza para crear, desarrollar, y gestionar proyectos y aplicaciones
+
+15**)que es un componente
+es un elemento fundamental para construir aplicaciones web en este framework.
+
+Cada componente consta de tres partes principales:
+Plantilla (Template): Define la estructura
+
+Clase: Define el comportamiento y la lógica del componente 
+
+Decorador (Decorator): Un decorador es una función que proporciona metadatos 
+
+15**)Como consumes servicios en angular 
+los servicios son clases que se utilizan para organizar y compartir lógica de negocio o funcionalidades
+
+para crear un servicio llamado mi-servicio
+ng generate service mi-servicio
+Definir la lógica del servicio: En la clase del servicio (mi-servicio.service.ts
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root' // Opcional: especifica el ámbito de la inyección del servicio
+})
+export class MiServicioService {
+  obtenerDatos(): string {
+    return 'Datos desde el servicio';
+  }
+}
+
+16**)Que es Rxjs
+o Reactive Extensions for JavaScript(Extensiones Reactivas para JavaScript), es una biblioteca de programación reactiva para JavaScript que facilita la composición 
+de código asíncrono y basado en evento
+
+
+17**)Diferencia entre subject y behaviorsubject
+se utilizan para emitir eventos y gestionar la comunicación entre componentes 
+
+Subject:
+
+Un Subject es un tipo de Observable en Angular que actúa como un puente entre los observables
+No almacena ningún valor inicial.
+
+BehaviorSubject:
+
+Es una herramienta que ayuda a administrar el estado y a facilitar el comportamiento reactivo en los servicios y componentes. 
+Debe inicializarse con un valor inicial.
+
+
+17**)Cuales son los 5 operadores de Rxjs mas populares y para que sirve
+map(): Este operador se utiliza para transformar los valores emitidos por un Observable
+
+filter(): Se utiliza para filtrar los valores emitidos por un Observable en función de un predicado o condición específica
+
+take(): Este operador se utiliza para tomar un número específico de valores emitidos por un Observable y luego completar la suscripción automáticamente
+
+tap(): A menudo utilizado para propósitos de efecto secundario, tap() permite realizar acciones secundarias sin modificar el flujo de datos
+
+18**)Que es el estado de la aplicacion? y como se mantiene
+el Estado es de una sola página (SPA) Single Page Applications, se refiere a la representación actual de todos los datos y su estado dentro de la aplicación
+
+
+19**) Cuales son algunas buenas practicas de angular?
+Utilizar CamelCase
+Utilizar variables arriba del constructor
+Utilizar getter al final de la pagina
+Utiliza el lazy loading para cargar módulos 
+Optimización del rendimiento usando AOT
+
+
+20**) Que es el patron forRoot?
+proporciona servicios y configuraciones globales que deben ser únicos en toda la aplicación.
+se utiliza principalmente al crear módulos que deben configurarse una sola vez 
+
+
+21**) Que arquitectura has visto o implementado en tu proyecto
+la arquitectura que eh utilzado es MVC modelo controlador Vista
+
+
+ventajas de uitlizar type script respecto con java scritpt
+
+JavaScript puede usarse tanto en el lado del cliente como en el lado del servidor (Node.js) para agregar interactividad, manipular el DOM, 
+realizar solicitudes HTTP
+
+En JavaScript, los tipos son dinámicos, lo que significa que pueden cambiar en tiempo de ejecución, lo que puede llevar a errores inesperados.
+
+Angular es un framework de desarrollo web que está construido sobre TypeScript
+
+Una de las Principales características de Angular
+Angular proporciona una arquitectura basada en móulos, componentes, servicios
+
+framework:framework es un conjunto de herramientas, y bibliotecas  proporciona una estructura estandarizada para el desarrollo de aplicaciones
+
+typeScript permite definir tipos de datos para variables, parámetros y valores de retorno de funciones. 
+Esto ayuda a detectar errores antes de la ejecución del código.
+s
+Que es un componente???
+
+un componente es una pieza fundamental de la arquitectura que controla una parte de la interfaz de usuario (UI)
+
+
+Que es un servicio ??(PE)
+
+
+un servicio es una clase que contiene lógica o funcionalidad que se puede compartir entre diferentes componentes de la aplicación
+
+Como se maneja una sesion ??
+
+Existen varias estrategias para manejar sesiones
+
+Local Storage: Almacena datos persistentes en el navegador
+
+Session Storage: Almacena datos solo durante la duración de la pestaña
+
+JWT (JSON Web Token): Comúnmente usado para la autenticación de sesiones
+

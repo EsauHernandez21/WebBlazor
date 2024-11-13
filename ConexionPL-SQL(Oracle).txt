@@ -1,0 +1,62 @@
+1. Instala el Paquete Oracle.ManagedDataAccess
+Si aún no lo has hecho, instala el paquete NuGet Oracle.ManagedDataAccess, que facilita la conexión a bases de datos Oracle en .NET 
+sin necesidad de instalar el cliente Oracle en el servidor.
+
+
+Install-Package Oracle.ManagedDataAccess
+
+Oracle.ManagedDataAccess.Core 23.6.0 para net 7
+2. Configuración en appsettings.json
+Puedes definir tus conexiones en appsettings.json para gestionarlas de manera centralizada:
+
+json
+{
+  "ConnectionStrings": {
+    "OracleTnsConnection": "User Id=admin;Password=sayoslp;Data Source=db_producto",
+    "OracleBasicConnection": "User Id=admin;Password=sayoslp;Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=DESKTOP-BV83E7S)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=bdProd)))"
+  }
+}
+
+
+3. Configuración en Startup.cs
+En tu archivo Startup.cs, registra los servicios de Oracle para inyectarlos en tus servicios o controladores. Puedes hacerlo de la siguiente manera:
+
+
+using Oracle.ManagedDataAccess.Client;
+var builder = WebApplication.CreateBuilder(args);
+
+// Configuración de la conexión para SQL Server
+builder.Services.AddDbContext<DBDProductos>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+        b => b.MigrationsAssembly("EntityDAL"))); // Cambia el nombre del ensamblado si es necesario
+
+// Configuración de la conexión para Oracle usando TNS
+builder.Services.AddSingleton(provider =>
+    new OracleConnection(builder.Configuration.GetConnectionString("OracleTnsConnection")));
+
+// Configuración de la conexión para Oracle usando conexión básica (si necesitas ambas)
+builder.Services.AddSingleton(provider =>
+    new OracleConnection(builder.Configuration.GetConnectionString("OracleBasicConnection")));
+
+// Añadir servicios para los productos
+builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
+builder.Services.AddScoped<IProductoService, ProductoService>();
+
+// Add services to the container.
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+var app = builder.Build();
+
+// Configurar el pipeline HTTP aquí
+app.UseAuthorization();
+app.MapControllers();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.Run();

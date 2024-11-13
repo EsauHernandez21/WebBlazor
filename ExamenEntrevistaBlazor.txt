@@ -1,0 +1,226 @@
+¿Qué es Blazor?
+
+es un framework de Microsoft que permite crear aplicaciones web interactivas de una sola página, también conocidas como Single Page Applications (SPA)Aplicaciones de paginas unica
+usando C# y html. 
+
+Se puede ejecutar tanto en el lado del servidor (Blazor Server) como en el navegador del cliente (Blazor WebAssembly).
+
+Se puede crear dos tipos de apicaciones blazor server side(lado del servidor) y blazor webAssembly(lado del cliente)
+
+
+
+Que es Blazor Server???
+
+Blazor Server es el modo más sencillo y compatible de Blazor. En este modo, el código C# se ejecuta en el servidor, usando ASP.NET Core, 
+y se envía al navegador mediante SignalR, una librería que permite establecer una conexión
+
+
+Que es WebAssembly???
+
+Blazor WebAssembly es un modelo SPA basado en WebAssembly1. 
+Esto significa que la construcción del DOM se realizará en el lado del cliente. Permite realizar operaciones en el lado del servidor, llamando a APIs para solicitar datos
+
+¿Diferencia entre Blazor Server y Blazor WebAssembly?
+
+Blazor Server ejecuta en el servidor y usa SignalR(permite que cualquier actualizacion en la interfaz de usuario (UI) sea resuelta por el servidor); 
+
+Blazor WebAssembly ejecuta en el navegador del cliente.
+
+Ventajas de Blazor Server vs. Blazor WebAssembly?
+
+Blazor Server tiene carga rápida y usa menos recursos del cliente; 
+
+WebAssembly funciona offline pero tiene mayor carga inicial.
+
+
+¿Qué es un componente en Blazor?
+
+Es una unidad reutilizable de UI con lógica, se define en archivos .razor.
+
+Estructura básica de un componente en Blazor.
+
+Usa HTML y C# dentro de un archivo .razor, con código encapsulado en @code.
+
+
+¿Qué es el ciclo de vida de un componente?
+
+Es el conjunto de etapas y eventos por los que pasa un componente desde su creación hasta su destrucción
+
+Es el proceso de inicialización, renderizado y limpieza de un componente.
+
+¿Para que sirve la virtualización?
+
+la virtualización es una técnica que optimiza el rendimiento del renderizado al limitar la visualización 
+solo a los elementos visibles en la interfaz
+
+¿Para que sirven los parametros en cascada?
+
+Permiten pasar datos de un componente ancestro a sus componentes descendientes de forma automática
+
+(componente ancestro)es un componente en una jerarquía que se encuentra en un nivel superior
+
+¿Para que se usa el método StateHasChanged?
+
+Se usa para notificar  el estado del componente ha cambiado y necesita ser renderizado nuevamente
+
+¿ Como se implementa la inyección de dependencias en Blazor?
+
+se implementa utilizando el contenedor de servicios de .NET, lo que permite inyectar servicios en los componentes de Blazor
+
+Métodos del ciclo de vida.
+
+OnInitialized, OnParametersSet, OnAfterRender, etc.
+
+¿Cómo se comunican los componentes?
+
+Los componentes se comunican principalmente a través de parámetros ([Parameter]), 
+EventCallback para emitir eventos al componente padre, y CascadingValues para compartir datos de forma jerárquica
+
+
+
+¿Qué es la inyección de dependencias en Blazor?
+Se implementa utilizando el contenedor de servicios de .NET, lo que permite inyectar servicios en los componentes
+
+Es la forma de pasar servicios o clases a los componentes para reutilizarlos.
+
+¿Qué es Razor en Blazor?
+
+Razor es un lenguaje de plantillas que permite combinar C# con HTML.
+Blazor Server vs. Blazor WebAssembly
+
+¿Cómo comunica Blazor Server con el servidor?
+
+A través de SignalR en una conexión persistente.
+
+¿Cómo sincroniza Blazor Server el estado?
+
+El estado se mantiene en el servidor y se actualiza en el cliente en tiempo real.
+
+
+Requisitos del cliente para Blazor WebAssembly.
+
+Solo necesita un navegador compatible con WebAssembly.
+
+¿Cómo se carga un archivo en Blazor WebAssembly?
+
+Utilizando el componente InputFile y leyendo los datos en el cliente.
+
+¿Qué es el prerenderizado en Blazor Server?
+
+Renderiza la app en el servidor antes de enviarla al cliente para mejorar el tiempo de carga.
+Programación y Manejo de Estados
+
+¿Cómo gestionar el estado en Blazor?
+
+Usando servicios Singleton o Scoped para almacenar datos compartidos.
+
+¿Qué es EventCallback?
+
+Es una forma de emitir eventos entre componentes.
+
+¿Qué es un RenderFragment?
+
+Es un bloque de contenido de UI que se puede pasar como parámetro.
+
+¿Cómo se navega entre páginas?
+
+Usando el servicio NavigationManager.
+
+¿Qué es @code en Blazor?
+
+Es la sección en los componentes donde se define la lógica en C#.
+Enlace de Datos y Eventos
+
+¿Qué es el data binding en Blazor?
+
+Es la sincronización entre datos del modelo y la UI.
+
+
+Tipos de data binding en Blazor.
+
+One-way, Two-way, y Event binding.
+
+¿Cómo se manejan los eventos?
+
+Con el prefijo @ seguido del evento, como @onclick.
+
+¿Cómo funciona el two-way binding?
+
+Permite actualizar el modelo y la UI simultáneamente usando bind.
+
+Uso de @onclick en Blazor.
+
+Se asigna a un método C# que se ejecuta al hacer clic en el elemento.
+Servicios y Componentes Reutilizables
+
+¿Cómo implementar un servicio?
+
+Definir una clase y registrarla en Program.cs con AddSingleton o AddScoped.
+
+
+Diferencia entre Singleton y Scoped.
+
+Singleton crea una sola instancia para toda la app; Scoped crea una por sesión.
+
+¿Cómo crear un componente reutilizable?
+
+Definir propiedades [Parameter]:Las propiedades que se desean recibir desde el componente padre 
+deben ser marcadas con el atributo [Parameter]
+
+@typeparam: Se usa para definir un parámetro de tipo genérico que el componente pueda aceptar.
+ 
+ 
+¿Qué es CascadingValue?
+
+Es una forma de compartir datos entre componentes anidados sin parámetros directos.
+
+Uso de @typeparam.
+
+Permite crear componentes genéricos para diferentes tipos de datos.
+
+Comunicación con APIs
+
+¿Cómo llamar una API REST?
+
+Usando HttpClient para enviar solicitudes HTTP.
+
+¿Qué es HttpClient en Blazor?
+
+Es el servicio que permite hacer peticiones HTTP desde Blazor.
+
+¿Cómo manejar la autenticación con API?
+
+Pasando un token de autorización en los encabezados de HttpClient.
+
+¿Qué estrategias de autenticación soporta Blazor?
+
+Token JWT, 
+OAuth((Open Authorization) es un protocolo de autorización que permite a las aplicaciones obtener acceso limitado a los recursos ), 
+y autenticación de cookies.
+Autenticación y Autorización
+
+¿Cómo manejar la autenticación en Blazor?
+
+Usando AuthenticationStateProvider para gestionar el estado de autenticación.
+
+¿Qué es AuthenticationStateProvider?
+
+Proporciona el estado de autenticación actual al componente.
+
+¿Cómo proteger un componente con [Authorize]?
+
+Aplicando el atributo [Authorize] en la página o componente.
+Optimización y Buenas Prácticas
+
+¿Qué es el prerenderizado en Blazor?
+
+Cargar la app en el servidor antes de enviarla al cliente para acelerar la percepción de velocidad.
+
+
+Buenas prácticas para optimizar Blazor.
+
+Minimizar JavaScript, usar servicios Scoped, y cargar datos asíncronamente.
+
+¿Cómo manejar errores en Blazor?
+
+Usando bloques try-catch y el componente ErrorBoundary para UI.

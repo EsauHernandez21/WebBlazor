@@ -1,0 +1,159 @@
+1)para desarrollar una API REST, ASP.NET Core Web API   es la opción recomendada
+
+2)Agrega Entity Framework Core y el proveedor de SQL Server:
+
+la ejecución de los comandos es a nivel de la solución de web api o para las soluciones de dal y model y demás soluciones??
+dotnet add package Microsoft.EntityFrameworkCore
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add package Microsoft.EntityFrameworkCore.Tool
+
+DAL: Maneja el acceso a la base de datos en la capa se isntala el EntityFrameWoek y se instala Microsoft.EntityFrameworkCore.Design
+
+cambiar ruta
+> cd C:\Esau\Proyectos\WebApiEntity\WebAppEntity\EntityDAL\DAL\
+
+muestra la ruta del directorio actual.
+Get-Location
+
+instalar por consola o paquete de nugets
+dotnet add package Microsoft.EntityFrameworkCore
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add package Microsoft.EntityFrameworkCore.Tools
+
+BLL: Contiene la lógica de negocio.
+DTO: Maneja la transferencia de datos.
+Model: Contiene las clases del modelo de datos.
+
+
+3)Configurar el Modelo Producto
+
+
+4)Configurar el DbContext
+
+
+
+5)Registrar el DbContext en Program.cs
+
+
+Hasta Aquí estamos:
+
+Registrando el DbContext para conectarse a la base de datos.
+Registrando el IProductoRepository con su implementación en ProductoRepository.
+
+NOTA:
+
+Solución: Instalar dotnet-ef
+Instalar la herramienta dotnet-ef globalmente:
+
+Ejecuta el siguiente comando en la terminal de comandos de Windows o en la consola de PowerShell para instalar la herramienta globalmente:
+
+Este comando instalará la versión de dotnet-ef compatible con .NET Core 7.0.
+dotnet tool install --global dotnet-ef --version 7.0.10
+
+dotnet tool install --global dotnet-ef
+
+Restaurar Dependencias
+Update-Package
+
+O desde la línea de comandos en la raíz de tu solución:
+dotnet restore
+
+
+Antes de ejecutar las migraciones, asegúrate de compilar tu proyecto para verificar que no haya errores:
+dotnet build
+
+6) Realiza la Migración y Actualiza la Base de Datos
+   Abre la consola de comandos en la capa de DAL donde esta instalado el Entity FrameWork
+   Ejecuta los siguientes comandos para generar la migración y actualizar la base de datos:
+
+Nota: cambiar la ruta del directorio donde se encuentra el proyecto csprog de la capa DAL(Data Access Layer)
+
+cd C:\Esau\Proyectos\WebApiEntity\WebAppEntity\EntityDAL
+
+Instalar el paquete Microsoft.EntityFrameworkCore.Design
+ejecutar el comando en la ruta especifica:
+                                           
+dotnet ef migrations add Inicial --project "C:\Esau\Proyectos\WebApiEntity\WebAppEntity\EntityDAL\EntityDAL.csproj"
+dotnet ef migrations add NombreDeTuMigracion --project "C:\Esau\Proyectos\WebApiEntity\WebAppEntity\EntityDAL\EntityDAL.csproj"
+dotnet ef migrations add Inicial
+dotnet ef database update
+
+dotnet ef database update --project "C:\Esau\Proyectos\WebApiEntity\WebAppEntity\EntityDAL\EntityDAL.csproj"
+
+La capa DAL se encarga de la interacción directa con la base de datos. Es donde se define el acceso a los datos y la lógica relacionada con las operaciones CRUD
+
+
+Propósito de la DAL:
+
+Acceso directo a la base de datos.
+Interactuar con Entity Framework (u otros ORM) o manejar las consultas SQL.
+
+
+
+Capa BLL (Business Logic Layer) - EntityBLL.BLL
+La capa BLL se encarga de la lógica de negocio de la aplicación. Aquí es donde se aplica la validación y las reglas de negocio antes de enviar o procesar los datos
+
+
+Propósito de la BLL:
+
+Gestionar las reglas de negocio.
+Aplicar validaciones y cálculos.
+
+
+Se crea la tabla manualmente 
+
+
+CREATE TABLE Categorias (
+    CategoriaId INT PRIMARY KEY IDENTITY(1,1),
+    Nombre NVARCHAR(100) NOT NULL
+);
+
+
+Actualizar tu Modelo de Datos en Entity Framework
+
+
+
+Agregar la Entidad en tu Proyecto
+Crea una clase para la nueva tabla en tu proyecto:
+
+public class Categoria
+{
+    public int CategoriaId { get; set; }
+    public string Nombre { get; set; }
+}
+
+ Modificar el DbContext
+
+
+public class DBDProductos : DbContext
+{
+    public DbSet<Producto> Productos { get; set; }
+    public DbSet<Categoria> Categorias { get; set; } // Añadir esta línea
+
+    // Otras configuraciones
+}
+
+
+Procedimiento Almacenado (SP)
+Crear el SP
+Puedes crear un procedimiento almacenado directamente en la base de datos. Por ejemplo:
+
+CREATE PROCEDURE GetCategorias
+AS
+BEGIN
+    SELECT * FROM Categorias;
+END;
+
+
+Llamar al Procedimiento Almacenado desde tu Aplicación
+Si deseas ejecutar este procedimiento almacenado desde tu aplicación, puedes hacerlo utilizando EF Core. Por ejemplo:
+
+public async Task<IEnumerable<Categoria>> ObtenerCategoriasAsync()
+{
+    return await _context.Categorias.FromSqlRaw("EXEC GetCategorias").ToListAsync();
+}
+
+Ejecutar comando a la inversa
+
+
+dotnet ef dbcontext scaffold "Data Source=DESKTOP-BV83E7S\SQLEXPRESS;Initial Catalog=BDProductos;User ID=esau;Password=sayoslp21;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models --context-dir Data --context DBDProductos

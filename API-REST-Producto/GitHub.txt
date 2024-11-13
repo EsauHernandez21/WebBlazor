@@ -1,0 +1,97 @@
+https://github.com/
+"Sign up" (Registrarse) 
+
+sayoslp@gmail.com
+*.210776sayo
+
+Nombre Usuario
+EsauHernandez21
+*.210776sayo
+
+Crea un nuevo repositorio.
+Usa Git para agregar y subir tu proyecto:
+
+
+https://github.com/EsauHernandez21/API-REST-Producto.git
+
+git clone https://github.com/EsauHernandez21/API-REST-Producto.git
+
+*************************************Subir repositorio
+
+
+1. Git
+Debes tener Git instalado en tu máquina. Si aún no lo tienes, puedes descargarlo e instalarlo desde aquí. Durante la instalación, puedes dejar las opciones predeterminadas.
+
+https://git-scm.com/downloads
+Download for Windows
+Esta opción te descargará automáticamente la versión más reciente (2.47.0) de Git
+
+Click here to download the latest (2.47.0) 64-bit version of Git for Windows. This is the most recent maintained build. It was released 8 days ago, on 2024-10-08
+
+1. Abrir Git Bash
+Buscar Git Bash: Puedes encontrar Git Bash en el menú de inicio de Windows. Solo busca "Git Bash" y selecciónalo para abrirlo.
+2. Navegar a tu proyecto
+Cambiar de directorio: Usa el comando cd (change directory) para moverte a la carpeta donde tienes tu proyecto. Por ejemplo:
+bash
+Copiar código
+cd /c/Esau/Proyectos/WebApiEntity/WebAppEntity
+
+2. Editor de Texto o IDE
+Aunque no es estrictamente necesario para ejecutar los comandos de Git, es recomendable tener un editor de texto o un IDE (como Visual Studio, Visual Studio Code, etc.) para trabajar con tu código y archivos del proyecto.
+
+3. Terminal o Línea de Comandos
+Necesitas acceso a una terminal o línea de comandos. Si estás en Windows, puedes usar:
+
+Command Prompt (cmd)
+Windows PowerShell
+Git Bash (viene con la instalación de Git y es una buena opción para usar comandos de Unix en Windows)
+Si estás en macOS o Linux, puedes usar la terminal que viene preinstalada.
+
+***********************************************************************************************************
+
+
+Pasos para subir tu proyecto:
+Instala Git si aún no lo tienes.
+Abre tu terminal o línea de comandos.
+Navega al directorio de tu proyecto usando el comando cd. Por ejemplo:
+bash
+Copiar código
+cd C:\ruta\de\tu\proyecto
+Ejecuta los comandos que mencionaste para crear el repositorio y subir tu proyecto a GitHub.
+Verificar la Instalación de Git
+Para verificar que Git está instalado correctamente, puedes ejecutar:
+
+bash
+Copiar código
+git --version
+
+…or create a new repository on the command line
+echo "# API-REST-Producto" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/EsauHernandez21/API-REST-Producto.git
+git push -u origin main
+
+
+
+Notas:
+Asegúrate de ejecutar estos comandos en el directorio de tu proyecto.
+Si tienes otros archivos en tu proyecto que deseas agregar al repositorio, asegúrate de usar git add . para agregar todos los archivos y carpetas al área de preparación antes de hacer el commit.
+Si es la primera vez que haces git push a un repositorio remoto, es posible que se te pida que ingreses tus credenciales de GitHub.
+
+…or push an existing repository from the command line
+git remote add origin https://github.com/EsauHernandez21/API-REST-Producto.git
+git branch -M main
+git push -u origin main
+
+
+
+git init
+git add .
+git commit -m "Primer commit"
+git remote add origin <URL de tu repositorio>
+git push -u origin main
+
+

@@ -1,0 +1,81 @@
+comando que debes ejecutar en la consola para realizar la ingeniería inversa de tu base de datos
+
+dotnet ef dbcontext scaffold "Data Source=DESKTOP-BV83E7S\SQLEXPRESS;Initial Catalog=BDProductos;User ID=esau;Password=sayoslp21;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models --context-dir Data --context DBDProductos
+
+
+
+Para integrar la tabla Categorias, que has creado manualmente en tu base de datos, con Entity Framework Core (EF Core), aquí tienes un proceso paso a paso:
+
+Paso 1: Crear el Modelo
+Crear la Clase del Modelo:
+Debes crear una clase que represente la tabla Categorias. Asegúrate de que el nombre de la clase y las propiedades coincidan con la estructura de la tabla.
+csharp
+Copiar código
+public class Categoria
+{
+    public int CategoriaId { get; set; } // Coincide con la columna CategoriaId
+    public string Nombre { get; set; }    // Coincide con la columna Nombre
+}
+Paso 2: Actualizar el DbContext
+Agregar DbSet al DbContext:
+Asegúrate de que tu DbContext tenga un DbSet para la nueva entidad Categoria.
+csharp
+Copiar código
+public class DBDProductos : DbContext
+{
+    public DbSet<Categoria> Categorias { get; set; } // Agrega esta línea
+
+    // Otras propiedades y configuraciones
+}
+Paso 3: Crear la Migración
+Agregar la Migración:
+Crea una migración que registre la existencia de la tabla en el código de EF Core. Ejecuta el siguiente comando en la consola del administrador de paquetes o en la terminal:
+bash
+Copiar código
+dotnet ef migrations add CategoriasTablaCreadaManual --project "C:\Esau\Proyectos\WebApiEntity\WebAppEntity\EntityDAL\EntityDAL.csproj"
+Paso 4: Modificar la Migración
+Modificar la Migración:
+Ve a la carpeta Migrations y abre la migración recién creada. Deberías encontrar un método Up() que intenta crear la tabla Categorias. Debes eliminar o comentar la línea que intenta crearla, ya que ya existe.
+csharp
+Copiar código
+protected override void Up(MigrationBuilder migrationBuilder)
+{
+    // migrationBuilder.CreateTable(
+    //     name: "Categorias",
+    //     columns: table => new
+    //     {
+    //         CategoriaId = table.Column<int>(nullable: false)
+    //             .Annotation("SqlServer:Identity", "1, 1"),
+    //         Nombre = table.Column<string>(nullable: false)
+    //     },
+    //     constraints: table =>
+    //     {
+    //         table.PrimaryKey("PK_Categorias", x => x.CategoriaId);
+    //     });
+}
+
+protected override void Down(MigrationBuilder migrationBuilder)
+{
+    // Aquí puedes agregar el código para eliminar la tabla si es necesario
+}
+Paso 5: Actualizar la Base de Datos
+Actualizar la Base de Datos:
+Una vez que hayas modificado la migración, aplica los cambios a la base de datos con el siguiente comando:
+bash
+Copiar código
+dotnet ef database update --project "C:\Esau\Proyectos\WebApiEntity\WebAppEn
+
+
+********************************************************Actualizar Entity FrameWork
+
+
+1)Actualizar el Modelo: Realiza los cambios en la clase Producto y ProductoDTO.
+
+2)Crear una Nueva Migración: Ejecuta el comando para agregar una nueva migración que refleje los cambios en la base de datos:
+
+dotnet ef migrations add AgregarDescripcionYStock --project "C:\Esau\Proyectos\WebApiEntity\WebAppEntity\EntityDAL\EntityDAL.csproj"
+
+
+3)Actualizar la Base de Datos: Aplica la migración para actualizar la base de datos con los nuevos campos:
+
+dotnet ef database update --project "C:\Esau\Proyectos\WebApiEntity\WebAppEntity\EntityDAL\EntityDAL.csproj"
